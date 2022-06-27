@@ -1,0 +1,11 @@
+* {
+    color: whitesmoke;
+}
+
+body {
+    background: #2c2c2c;
+}
+
+select, input, option, button {
+    color: black;
+}
