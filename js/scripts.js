@@ -1,6 +1,6 @@
 console.log("male");
 var gender = "male";
-var species = ["human", "bug", "animal", "fish", "noodle"];
+var species = ["human", "bug", "animal", "fish", "noodle", "bird", "monster", "elf", "dwarf", "dragon", "capybara"];
 
 function $(div) {
     return document.getElementById(div);
