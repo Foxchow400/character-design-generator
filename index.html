@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>Character Generator</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="css/style.css">
   </head>
   
   <body>
@@ -15,27 +15,23 @@
         </select>
     </section>
 
-    <section>
-        <form id="species">
-            <p>Choose the Species:</p>
-            <input type="radio" id="human" name="species" value="human">
-            <label for="human">Human</label>
-            <input type="radio" id="bug" name="species" value="bug">
-            <label for="bug">Bug</label>
-            <input type="radio" id="animal" name="species" value="animal">
-            <label for="animal">Animal</label> 
-        </form>
-    </section>
+    <!-- <section>
+      <p>Choose the Species:</p>
+      <input type="radio" id="human" name="species" value="human">
+      <label for="human">Human</label>
+      <input type="radio" id="bug" name="species" value="bug">
+      <label for="bug">Bug</label>
+      <input type="radio" id="animal" name="species" value="animal">
+      <label for="animal">Animal</label>
+    </section> -->
 
     <button onclick="generate()">Generate</button>
+    <br>
 
-    <section id="output">
-
-    </section>
-
+    <section id="output"></section>
 
     <footer>
-      <script src="/js/scripts.js"></script>
+      <script src="js/scripts.js"></script>
     </footer>
   </body>
 </html>
