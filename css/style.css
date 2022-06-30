@@ -9,3 +9,7 @@ body {
 select, input, option, button {
     color: black;
 }
+
+img {
+    padding: 10px;
+}
