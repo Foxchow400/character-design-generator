@@ -1,82 +1,118 @@
-var gender = ["male", "female", "other"];
+var gender = ["male", "female", "neutral"];
 var species = ["human", "bug", "animal", "fish", "noodle", "bird", "monster", "elf", "dwarf", "dragon", "lizard"];
-var img = ["images/human.png", "images/bug.png", "images/animal.png", "images/fish.png", "images/noodle.png", "images/bird.png", "images/monster.png", "images/elf.png", "images/dwarf.png", "images/dragon.png", "images/lizard.png"];
+var classes = ["barbarian", "fighter", "cleric", "bard", "wizard", "sorcerer", "druid", "rogue", "monk", "ranger", "artificer"];
+var savedResult = [];
+var charResult = [];
+var partySettings = [];
+var masterSettings = [];
+var totalChars = 6;
 
-function $(div) {
-    return document.getElementById(div);
+// generates the current species being used
+function generateSpecies() {
+  var curSpecies = 0;
+  curSpecies = Math.floor(Math.random() * species.length);
+  return curSpecies;
 }
 
-function display(g) {
-    var str = "";
-    var s = Math.floor(Math.random(0, 1) * species.length);
-    console.log(s);
-    var color1 = getColor();
-    var color2 = getColor();
-    var color3 = getColor();
+// gets random a random number for color settings
+function color() {
+  return Math.floor(Math.random() * 256)
+}
 
-    switch (s) {
-        case 0:
-            img = "<img src='images/human.png'>"
-          break;
-        case 1:
-            img = "<img src='images/bug.png'>"
-          break;
-        case 2:
-            img = "<img src='images/animal.png'>"
-          break;
-        case 3:
-            img = "<img src='images/fish.png'>"
-          break;
-        case 4:
-            img = "<img src='images/noodle.png'>"
-          break;
-        case 5:
-            img = "<img src='images/bird.png'>"
-          break;
-        case 6:
-            img = "<img src='images/monster.png'>"
-          break;
-        case 7:
-            img = "<img src='images/elf.png'>"
-          break;
-        case 8:
-            img = "<img src='images/dwarf.png'>"
-          break;
-        case 9:
-            img = "<img src='images/dragon.png'>"
-          break;
-        case 10:
-            img = "<img src='images/lizard.png'>"
-          break;
-          default:
-            img = "<img src='images/none.png'>"
-      }
-
-    str += "<section>" + "Gender: " +
-    g + "</section>" + "<br>";
-
-    str += "<section>" + img + "</section>"
+// displays the generated party and creates arrays to prepare for any saves
+function generateDisplay() {
+  document.getElementById("display").innerHTML = "<h1>Your party!</h1>"
+  var playerClass = "";
+  var speciesSet = "";
+  for (i = 1; i < totalChars + 1; i++) {
+    // variable and random num declarations
+    var charSet = "";
+    var allSettings = [];
+    playerClass = Math.floor(Math.random() * classes.length);
+    speciesSet = species[generateSpecies()];
     
-    str += "<section>" + "Species: " +
-    species[s] + "</section>" + "<br>";
+    // the party html (per character)
+    charSet =
+    "<section class='char' id='char" + i + "'>" +
+    "<h1>Character " + i + "</h1>" +
+    "<img src='img/" + speciesSet + ".png' alt='Species'></img>" +
+    "<section class='up'>" + 
+    "<p id='species" + savedResult.length + "_" + i + "' class='top'>Species: " + speciesSet + "</p>" +
+    "<p id='gender_" + savedResult.length  + "_" + i + "' class='top'>Gender: " + gender[Math.floor(Math.random() * gender.length)] + "</p>" +
+    "<p id='class_" + savedResult.length + "_" + i + "' class='top'>Class: " + classes[playerClass] + "</p>" +
+    "</section>" +
+    "<section class='down'>" + 
+    "<p class='bottom' id='color1_" + i + "'>rgba( " + color() + ", " + color() + ", " + color() + ", 1)</p>" +
+    "<p class='bottom' id='color2_" + i + "'>rgba( " + color() + ", " + color() + ", " + color() + ", 1)</p>" +
+    "<p class='bottom' id='color3_" + i + "'>rgba( " + color() + ", " + color() + ", " + color() + ", 1)</p>" +
+    "</section></section>";
+    
+    // makes an array with the current party html
+    charResult.push(charSet);
 
-    str += "<div id='color1'>Color 1</div>"
-    str += "<div id='color2'>Color 2</div>"
-    str += "<div id='color3'>Color 3</div>"
+    // prints all six characters, not just the last one
+    if (i != 1) {
+      document.getElementById("display").innerHTML += charResult[i -1];
+    } else {
+      document.getElementById("display").innerHTML = charResult[i - 1];
+    }
+    
+    // the shorthand data for the txt file
+    partySettings.push(
+    (allSettings[0] = document.getElementById("species" + savedResult.length + "_" + i + "").innerHTML),
+    (allSettings[1] = document.getElementById("gender_" + savedResult.length  + "_" + i + "").innerHTML),
+    (allSettings[2] = document.getElementById("class_" + savedResult.length + "_" + i + "").innerHTML),
+    (allSettings[3] = document.getElementById("color1_" + i + "").innerHTML),
+    (allSettings[4] = document.getElementById("color2_" + i + "").innerHTML),
+    (allSettings[5] = document.getElementById("color3_" + i + "").innerHTML))
 
-    $("output").innerHTML = str;
+    // sets the color of the current party characters
+    document.getElementById("color1_" + i).style.color = document.getElementById("color1_" + i).innerHTML
+    document.getElementById("color2_" + i).style.color = document.getElementById("color2_" + i).innerHTML
+    document.getElementById("color3_" + i).style.color = document.getElementById("color3_" + i).innerHTML
+  }
 
-    $("color1").style.backgroundColor = "rgba(" + color1[0] + "," + color1[1] + "," + color1[2] + ", 1)";
-    $("color2").style.backgroundColor = "rgba(" + color2[0] + "," + color2[1] + "," + color2[2] + ", 1)";
-    $("color3").style.backgroundColor = "rgba(" + color3[0] + "," + color3[1] + "," + color3[2] + ", 1)";
+  // button options
+  document.getElementById("buttonDisplay").innerHTML = "<button id='reset' onclick='reset()'>Generate</button>"
+  document.getElementById("buttonDisplay").innerHTML += "<button id='save' onclick='saveParty()'>Save Party</button>";
+  document.getElementById("buttonDisplay").innerHTML += "<button id='print' onclick='printParty()'>Print Party</button>";
 }
 
-function getColor() {
-    return [(Math.floor(Math.random(0, 1) * 255)), (Math.floor(Math.random(0, 1) * 255)), (Math.floor(Math.random(0, 1) * 255))];
+// shows the saved party and creates data file
+function saveParty() {
+  // used as a counter and an array
+  savedResult.push(charResult);
+
+  // displays saved parties
+  document.getElementById("saved").innerHTML += "<section>"
+  for (i = 1; i < totalChars + 1; i++) {
+  document.getElementById("saved").innerHTML += charResult[i - 1];
+  }
+  document.getElementById("saved").innerHTML += "</section>"
+
+  // sends the party settings array to a new txt file
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([partySettings], {
+    type: "text/plain"
+  }));
+  a.setAttribute("download", "party.txt");
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  // calls the reset function to clear arrays
+  reset();
 }
 
-function generate(species,s) {
-    gender = $("gender").value;
-    display(gender);
+// prints the window when print button is pressed
+function printParty() {
+  window.print();
 }
 
+// resets the current party and adds to the master list
+function reset() {
+  charResult = [];
+  generateDisplay();
+  masterSettings.push(partySettings);
+  partySettings = [];
+}

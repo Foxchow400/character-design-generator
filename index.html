@@ -6,21 +6,12 @@
   </head>
   
   <body>
-    <section>
-        <p>Gender</p>
-        <select id="gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-        </select>
-    </section>
-    <br>
-    <button onclick="generate()">Generate</button>
-    <br>
-
-    <section id="output">
-      <img src='images/none.png'>
-    </section>
+    <div id="display">
+      <img src='img/none.png'>
+      <button id="generate" onclick="generateDisplay()">Generate</button>
+    </div>
+    <div id="buttonDisplay"></div>
+    <div id="saved"></div>
 
     <footer>
       <script src="js/scripts.js"></script>

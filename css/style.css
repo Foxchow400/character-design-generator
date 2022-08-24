@@ -1,9 +1,20 @@
-* {
+body {
+    background: #2c2c2c;
     color: whitesmoke;
 }
 
-body {
-    background: #2c2c2c;
+section {
+    display: inline;
+}
+
+h1 {
+    padding: 10px;
+}
+
+p {
+    width: 40px;
+    display: inline-block;
+    margin: 20px;
 }
 
 select, input, option, button {
@@ -12,4 +23,33 @@ select, input, option, button {
 
 img {
     padding: 10px;
+    margin: 0 auto;
+}
+
+#generate {
+    display: block;
+}
+
+.char {
+    max-width: 300;
+    background-color: #3f3f3f;
+    display: inline-block;
+    margin: 20px;
+}
+
+.up {
+    display: block;
+    width: 60;
+}
+
+.down {
+    display: block;
+}
+
+.char {
+    height: 400px;
+}
+
+.bottom, .down {
+    height: 50px;
 }
