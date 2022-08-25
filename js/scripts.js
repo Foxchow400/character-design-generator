@@ -1,107 +1,141 @@
-var gender = ["male", "female", "neutral"];
+var gender = ["male", "female", "other"];
 var species = ["human", "bug", "animal", "fish", "noodle", "bird", "monster", "elf", "dwarf", "dragon", "lizard"];
 var classes = ["barbarian", "fighter", "cleric", "bard", "wizard", "sorcerer", "druid", "rogue", "monk", "ranger", "artificer"];
 var savedResult = [];
 var charResult = [];
 var partySettings = [];
-var masterSettings = [];
+var partyObj = {};
 var totalChars = 6;
+var imported;
 
-// generates the current species being used
-function generateSpecies() {
-  var curSpecies = 0;
-  curSpecies = Math.floor(Math.random() * species.length);
-  return curSpecies;
+function onFilePicked(evt) {
+  var file = document.getElementById("filePicker").files[0]
+  var reader = new FileReader()
+  reader.readAsText(file, "UTF-8") // read file as text
+    
+  if (file) {
+    reader.onload = function (evt) {
+      validatedFile = evt.target.result
+      validatedFile = String(validatedFile)
+      console.log(validatedFile)
+      partyObj = JSON.parse(validatedFile);
+      generateDisplay();
+      return validatedFile
+    }
+    reader.onerror = function (evt) {
+        display("display", "Error: Unable to read file.")
+    }
+  }
 }
 
-// gets random a random number for color settings
+// generates the current species being used
+function getRandom(arr) {
+  var curNum = Math.floor(Math.random() * arr.length);
+  return curNum;
+}
+
+function individualGen(i) {
+  console.log(i)
+  generateStats(i)
+  document.getElementsByClassName("char")[i].innerHTML =
+     "<h2 class='space'>Character " + (Math.floor(i) + 1) + "</h2>" + 
+     "<img class='' src='img/" + partyObj[i].species + ".png'></img>" +
+     "<section class='down'>" +
+     "<div class='color' style='background-color:" + partyObj[i].colors[0] + "'><p class='space'>Species: " + partyObj[i].species + "</p></div>" +
+     "<div class='color' style='background-color:" + partyObj[i].colors[1] + "'><p class='space'>Class: " + partyObj[i].class + "</p></div>" +
+     "<div class='color' style='background-color:" + partyObj[i].colors[2] + "'><p class='space'>Gender: " + partyObj[i].gender + "</p></div>" +
+     "</section><button class='reroll' value='" + i + "'onclick='individualGen(this.value)'>Reroll</button>";
+}
+
 function color() {
-  return Math.floor(Math.random() * 256)
+  var o = Math.round, r = Math.random, s = 255;
+  return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
 }
 
 // displays the generated party and creates arrays to prepare for any saves
 function generateDisplay() {
   document.getElementById("display").innerHTML = "<h1>Your party!</h1>"
-  var playerClass = "";
-  var speciesSet = "";
-  for (i = 1; i < totalChars + 1; i++) {
-    // variable and random num declarations
-    var charSet = "";
-    var allSettings = [];
-    playerClass = Math.floor(Math.random() * classes.length);
-    speciesSet = species[generateSpecies()];
-    
-    // the party html (per character)
-    charSet =
-    "<section class='char' id='char" + i + "'>" +
-    "<h1>Character " + i + "</h1>" +
-    "<img src='img/" + speciesSet + ".png' alt='Species'></img>" +
-    "<section class='up'>" + 
-    "<p id='species" + savedResult.length + "_" + i + "' class='top'>Species: " + speciesSet + "</p>" +
-    "<p id='gender_" + savedResult.length  + "_" + i + "' class='top'>Gender: " + gender[Math.floor(Math.random() * gender.length)] + "</p>" +
-    "<p id='class_" + savedResult.length + "_" + i + "' class='top'>Class: " + classes[playerClass] + "</p>" +
-    "</section>" +
-    "<section class='down'>" + 
-    "<p class='bottom' id='color1_" + i + "'>rgba( " + color() + ", " + color() + ", " + color() + ", 1)</p>" +
-    "<p class='bottom' id='color2_" + i + "'>rgba( " + color() + ", " + color() + ", " + color() + ", 1)</p>" +
-    "<p class='bottom' id='color3_" + i + "'>rgba( " + color() + ", " + color() + ", " + color() + ", 1)</p>" +
-    "</section></section>";
-    
-    // makes an array with the current party html
-    charResult.push(charSet);
-
-    // prints all six characters, not just the last one
-    if (i != 1) {
-      document.getElementById("display").innerHTML += charResult[i -1];
-    } else {
-      document.getElementById("display").innerHTML = charResult[i - 1];
+  if (Object.keys(partyObj).length < totalChars) {
+    console.log("Generating");
+    for (i = 0; i < totalChars; i++) {
+      generateStats(i);
     }
-    
-    // the shorthand data for the txt file
-    partySettings.push(
-    (allSettings[0] = document.getElementById("species" + savedResult.length + "_" + i + "").innerHTML),
-    (allSettings[1] = document.getElementById("gender_" + savedResult.length  + "_" + i + "").innerHTML),
-    (allSettings[2] = document.getElementById("class_" + savedResult.length + "_" + i + "").innerHTML),
-    (allSettings[3] = document.getElementById("color1_" + i + "").innerHTML),
-    (allSettings[4] = document.getElementById("color2_" + i + "").innerHTML),
-    (allSettings[5] = document.getElementById("color3_" + i + "").innerHTML))
-
-    // sets the color of the current party characters
-    document.getElementById("color1_" + i).style.color = document.getElementById("color1_" + i).innerHTML
-    document.getElementById("color2_" + i).style.color = document.getElementById("color2_" + i).innerHTML
-    document.getElementById("color3_" + i).style.color = document.getElementById("color3_" + i).innerHTML
+  } else {
+    console.log("Error!");
   }
+  updateDisplay();
 
   // button options
-  document.getElementById("buttonDisplay").innerHTML = "<button id='reset' onclick='reset()'>Generate</button>"
-  document.getElementById("buttonDisplay").innerHTML += "<button id='save' onclick='saveParty()'>Save Party</button>";
-  document.getElementById("buttonDisplay").innerHTML += "<button id='print' onclick='printParty()'>Print Party</button>";
+  document.getElementById("buttonDisplay").innerHTML =
+   "<button id='reset' onclick='reset()'>Generate</button>" + 
+   "<button id='save' onclick='saveParty()'>Save Party</button>" + 
+   "<button id='print' onclick='printParty()'>Print Party</button>";
 }
+
+function updateDisplay() {
+  for (i = 0; i < totalChars; i++) {
+    document.getElementById("display").innerHTML +=
+     "<section class='char'>" + 
+     "<h2 class='space'>Character " + (partyObj[i].name + 1) + "</h2>" + 
+     "<img class='' src='img/" + partyObj[i].species + ".png'></img>" +
+     "<section class='down'>" +
+     "<div class='color' style='background-color:" + partyObj[i].colors[0] + "'><p class='space'>Species: " + partyObj[i].species + "</p></div>" +
+     "<div class='color' style='background-color:" + partyObj[i].colors[1] + "'><p class='space'>Class: " + partyObj[i].class + "</p></div>" +
+     "<div class='color' style='background-color:" + partyObj[i].colors[2] + "'><p class='space'>Gender: " + partyObj[i].gender + "</p></div>" +
+     "</section><button class='reroll' value='" + i + "'onclick='individualGen(this.value)'>Reroll</button></section>";
+  }
+}
+// button class='reroll' onclick='individualGen(this.class)'>Reroll</button>
+
+// generate stat block
+function generateStats(charID) {
+  console.log(charID)
+  var charObj = {};
+  // var allSettings = [];
+  playerClass = classes[getRandom(classes)];
+  speciesSet = species[getRandom(species)];
+  genderSet = gender[getRandom(gender)];
+
+  // fill character object properties
+  charObj.name = charID;
+  charObj.class = playerClass
+  charObj.species = speciesSet
+  charObj.gender = genderSet
+  charObj.colors = {}
+  
+  
+  
+  for (j=0;j<3;j++) {
+    charObj.colors[j] = color();
+  }
+  // update master party object
+  partyObj[charID] = charObj
+  console.log(charID);
+  console.log(partyObj);
+
+}
+
+
+// make the colors a separate function, and make the html match the properties 
 
 // shows the saved party and creates data file
 function saveParty() {
-  // used as a counter and an array
-  savedResult.push(charResult);
+  var partyStr = JSON.stringify(partyObj)
+  console.log(partyObj)
+  console.log(typeof partyObj)
+  console.log(Object.toString(partyObj))
+  document.getElementById("saved").innerHTML = partyStr;
 
-  // displays saved parties
-  document.getElementById("saved").innerHTML += "<section>"
-  for (i = 1; i < totalChars + 1; i++) {
-  document.getElementById("saved").innerHTML += charResult[i - 1];
-  }
-  document.getElementById("saved").innerHTML += "</section>"
+  
+  var element = document.createElement("a");
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + partyStr);
+  element.setAttribute('download', 'data');
+  element.style.display = 'none';
+  document.body.appendChild(element);
 
-  // sends the party settings array to a new txt file
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([partySettings], {
-    type: "text/plain"
-  }));
-  a.setAttribute("download", "party.txt");
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  element.click();
 
-  // calls the reset function to clear arrays
-  reset();
+  document.body.removeChild(element);
 }
 
 // prints the window when print button is pressed
@@ -112,7 +146,8 @@ function printParty() {
 // resets the current party and adds to the master list
 function reset() {
   charResult = [];
-  generateDisplay();
-  masterSettings.push(partySettings);
+  // masterSettings.push(partySettings);
   partySettings = [];
+  partyObj = {};
+  generateDisplay();
 }

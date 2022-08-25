@@ -6,9 +6,13 @@
   </head>
   
   <body>
+    <h4>Import: <input id="filePicker" type="file" onchange='onFilePicked(event)'/></h4>
+    
     <div id="display">
-      <img src='img/none.png'>
-      <button id="generate" onclick="generateDisplay()">Generate</button>
+      <section id="generate">
+      <img id="def" src='img/none.png'>
+      <button  onclick="generateDisplay()">Generate</button>
+      </section>
     </div>
     <div id="buttonDisplay"></div>
     <div id="saved"></div>
