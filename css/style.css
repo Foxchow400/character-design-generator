@@ -14,7 +14,6 @@ h1 {
 }
 
 p {
-    display: inline-block;
     margin: 20px;
     padding: 10px 20px;
     background-color: #3f3f3f;
@@ -78,3 +77,8 @@ button {
     display: block;
     margin: 0 auto;
 }
+
+.atrCont {
+    display: inline-block;
+}
+
