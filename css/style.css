@@ -14,17 +14,11 @@ h1 {
 }
 
 p {
-    /* width: 40px; */
     display: inline-block;
     margin: 20px;
     padding: 10px 20px;
     background-color: #3f3f3f;
     text-align: center;
-}
-
-#def {
-    margin: 0 auto;
-    display: block;
 }
 
 select, input, option, button {
@@ -46,11 +40,6 @@ button {
     padding: 10px;
 }
 
-#generate {
-    display: block;
-    margin: 0 auto;
-}
-
 .char {
     min-width: 250px;
     background-color: #3f3f3f;
@@ -60,12 +49,11 @@ button {
     border-radius: 15px;
 }
 
-
 .color {
     width: 120px;
     min-height: 100px;
     display: inline-block;
-    border: 1px solid white;;
+    border: 1px solid white;
 }
 
 .up {
@@ -77,7 +65,16 @@ button {
     display: block;
 }
 
-
 .bottom, .down {
     height: 50px;
+}
+
+#def {
+    margin: 0 auto;
+    display: block;
+}
+
+#generate {
+    display: block;
+    margin: 0 auto;
 }

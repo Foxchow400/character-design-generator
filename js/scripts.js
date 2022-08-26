@@ -1,6 +1,7 @@
 var gender = ["male", "female", "other"];
-var species = ["human", "bug", "animal", "fish", "noodle", "bird", "monster", "elf", "dwarf", "dragon", "lizard"];
-var classes = ["barbarian", "fighter", "cleric", "bard", "wizard", "sorcerer", "druid", "rogue", "monk", "ranger", "artificer"];
+var species = ["human", "antecs", "tabaxi", "merfolk", "yuan-ti", "avian", "monster", "elf", "dwarf", "dragonborn", "lizardfolk", "halfing"];
+var classes = ["barbarian", "fighter", "cleric", "bard", "wizard", "sorcerer", "druid", "rogue", "monk", "ranger", "paladin"];
+var sizes = ["small", "medium", "large"]
 var savedResult = [];
 var charResult = [];
 var partySettings = [];
@@ -34,31 +35,24 @@ function getRandom(arr) {
   return curNum;
 }
 
-function individualGen(i) {
-  console.log(i)
-  generateStats(i)
-  document.getElementsByClassName("char")[i].innerHTML =
-     "<h2 class='space'>Character " + (Math.floor(i) + 1) + "</h2>" + 
-     "<img class='' src='img/" + partyObj[i].species + ".png'></img>" +
-     "<section class='down'>" +
-     "<div class='color' style='background-color:" + partyObj[i].colors[0] + "'><p class='space'>Species: " + partyObj[i].species + "</p></div>" +
-     "<div class='color' style='background-color:" + partyObj[i].colors[1] + "'><p class='space'>Class: " + partyObj[i].class + "</p></div>" +
-     "<div class='color' style='background-color:" + partyObj[i].colors[2] + "'><p class='space'>Gender: " + partyObj[i].gender + "</p></div>" +
-     "</section><button class='reroll' value='" + i + "'onclick='individualGen(this.value)'>Reroll</button>";
-}
-
 function color() {
   var o = Math.round, r = Math.random, s = 255;
   return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+}
+
+function generateAttr() {
+  // attributes: str, dex, con, int, wis, cha
+
 }
 
 // displays the generated party and creates arrays to prepare for any saves
 function generateDisplay() {
   document.getElementById("display").innerHTML = "<h1>Your party!</h1>"
   if (Object.keys(partyObj).length < totalChars) {
-    console.log("Generating");
-    for (i = 0; i < totalChars; i++) {
-      generateStats(i);
+    console.log("Generating " + totalChars + " Characters");
+    for (j = 0; j < totalChars; j++) {
+      console.log(j)
+      generateStats(j);
     }
   } else {
     console.log("Error!");
@@ -73,16 +67,18 @@ function generateDisplay() {
 }
 
 function updateDisplay() {
-  for (i = 0; i < totalChars; i++) {
+  document.getElementById("display").innerHTML = "";
+  for (gen = 0; gen < totalChars; gen++) {
+    console.log(gen);
     document.getElementById("display").innerHTML +=
      "<section class='char'>" + 
-     "<h2 class='space'>Character " + (partyObj[i].name + 1) + "</h2>" + 
-     "<img class='' src='img/" + partyObj[i].species + ".png'></img>" +
-     "<section class='down'>" +
-     "<div class='color' style='background-color:" + partyObj[i].colors[0] + "'><p class='space'>Species: " + partyObj[i].species + "</p></div>" +
-     "<div class='color' style='background-color:" + partyObj[i].colors[1] + "'><p class='space'>Class: " + partyObj[i].class + "</p></div>" +
-     "<div class='color' style='background-color:" + partyObj[i].colors[2] + "'><p class='space'>Gender: " + partyObj[i].gender + "</p></div>" +
-     "</section><button class='reroll' value='" + i + "'onclick='individualGen(this.value)'>Reroll</button></section>";
+    //  "<h2 class='space'>Character " + partyObj[gen].charName + "</h2>" + 
+    //  "<img class='' src='img/" + partyObj[gen].species + ".png'></img>" +
+    //  "<section class='down'>" +
+    //  "<div class='color' style='background-color:" + partyObj[gen].colors[0] + "'><p class='space'>Species: " + partyObj[gen].species + "</p></div>" +
+    //  "<div class='color' style='background-color:" + partyObj[gen].colors[1] + "'><p class='space'>Class: " + partyObj[gen].charClass + "</p></div>" +
+    //  "<div class='color' style='background-color:" + partyObj[gen].colors[2] + "'><p class='space'>Gender: " + partyObj[gen].gender + "</p></div>" +
+     "</section><button class='reroll' value='" + k + "' onclick='generateStats(" + k + "); updateDisplay()'>Reroll</button></section></section>";
   }
 }
 // button class='reroll' onclick='individualGen(this.class)'>Reroll</button>
@@ -91,26 +87,86 @@ function updateDisplay() {
 function generateStats(charID) {
   console.log(charID)
   var charObj = {};
-  // var allSettings = [];
   playerClass = classes[getRandom(classes)];
   speciesSet = species[getRandom(species)];
   genderSet = gender[getRandom(gender)];
 
+  /*Character Properties (3 attributes that are relative to the other attributes, making 10 total, ex, skill points based on class)
+  
+    name: character name
+    class: character class
+    species: character species
+    gender: character gender
+    colors: 3 character colors
+    attributes: str, dex, con, int, wis, cha
+    hp: hp based on class + con
+    size: based on species
+    ac: 10 + dex + size mod 
+    skill points: int mod + class mod (plus 4 at first level)
+
+    abilities: Roll 6d8 and add ten? (must be between 3 - 18)
+
+    species sizes:
+    med: everything but halfling
+    small: halfling
+
+    skill points: 
+    barbarian: 4
+    fighter: 2
+    cleric: 2
+    bard: 6
+    wizard: 2
+    sorcerer: 2
+    druid: 4
+    rogue: 8
+    monk: 4
+    ranger: 6
+    paladin: 2
+
+    hit points: 
+    barbarian: d12
+    fighter: d10
+    cleric: d8
+    bard: d6
+    wizard: d4
+    sorcerer: d4
+    druid: d8
+    rogue: d6
+    monk: d8
+    ranger: d8
+    paladin: d10
+  */
+
+    var abilityScores = {};
+    var abilityNames = ["str", "dex", "con", "int", "wis", "cha"]
+    
   // fill character object properties
-  charObj.name = charID;
-  charObj.class = playerClass
-  charObj.species = speciesSet
-  charObj.gender = genderSet
+  // charObj.charName = charID;
+  // charObj.charClass = playerClass
+  // charObj.species = speciesSet
+  // charObj.gender = genderSet
+
+  charObj.charName = "";
+  charObj.charClass = ""
+  charObj.species = ""
+  charObj.gender = ""
   charObj.colors = {}
+  charObj.attributes = {}
+  charObj.health = {}
+  charObj.size = {}
+  charObj.armor = {}
+  charObj.skill = {}
   
-  
-  
+  for (i = 0; i < Object.keys(abilityNames).length; i++) {
+    abilityScores[abilityNames[i]] = Math.floor(Math.random() * 16) + 3
+  }
+
   for (j=0;j<3;j++) {
     charObj.colors[j] = color();
   }
   // update master party object
   partyObj[charID] = charObj
-  console.log(charID);
+  console.log(charObj);
   console.log(partyObj);
 
 }
