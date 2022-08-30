@@ -3,74 +3,13 @@ body {
     color: whitesmoke;
 }
 
-section {
-    display: inline;
-    padding: 25px;
-    text-align: center;
-}
-
-h1 {
-    padding: 10px;
-}
-
-p {
-    margin: 20px;
-    padding: 10px 20px;
-    background-color: #3f3f3f;
-    text-align: center;
-}
-
-select, input, option, button {
-    color: black;
-}
-
-img {
-    padding: 10px;
-    margin: 0 auto;
-}
-
-button {
-    display: inline-block;
-}
-
-.reroll {
-    display: block;
-    margin: 50px auto;
-    padding: 10px;
-}
-
-.char {
-    min-width: 250px;
-    background-color: #3f3f3f;
-    display: inline-block;
-    margin: 20px;
-    height: 400px;
-    border-radius: 15px;
-}
-
-.color {
-    width: 120px;
-    min-height: 100px;
-    display: inline-block;
-    border: 1px solid white;
-}
-
-.up {
-    display: block;
-    width: 60;
-}
-
-.down {
-    display: block;
-}
-
-.bottom, .down {
-    height: 50px;
-}
-
-#def {
+.generate, .def{
     margin: 0 auto;
     display: block;
+}
+
+p, h2 {
+    text-align: center;
 }
 
 #generate {
@@ -78,7 +17,87 @@ button {
     margin: 0 auto;
 }
 
+.char {
+    width: 900px;
+    background-color: #3f3f3f;
+    display: inline-block;
+    margin: 20px;
+    height: 350px;
+    border-radius: 15px;
+}
+
 .atrCont {
+    background-color:#2c2c2c;
+    padding: 20px;
+    width: 60px;
+    margin: 40px;
+}
+
+.down {
+    height: 100px;
+    margin: 20px;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.flex-container > div {
+    margin: 10px;
+    text-align: center;
+}
+
+.space {
+    margin: 20px;
+    padding: 10px 20px;
+    background-color: #3f3f3f;
+}
+
+.color {
+    border: 1px solid white;}
+
+.belowAtr {
+    display: inline-flex;
+    padding: 40px;
+    border: 1px solid black;
+}
+
+.charButtons {
     display: inline-block;
 }
 
+@keyframes bounce {
+	0%, 100%, 20%, 50%, 80% {transform: translateY(0)}
+	40% {transform:translateY(-30px)}
+	60% {transform:translateY(-15px)}
+}
+
+img {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+img:hover {
+  cursor: pointer;
+  animation-name: bounce;
+
+}
+
+#hp {
+    background-image: linear-gradient(to bottom right, red, rgb(107, 5, 5));
+}
+
+#skl {
+    background-image: linear-gradient(to bottom right, rgb(40, 128, 15), rgb(6, 140, 102));
+}
+
+#ac {
+    background-image: linear-gradient(to bottom right, rgb(0, 42, 255), rgb(22, 0, 76));
+}
+
+#cls {
+    background-image: linear-gradient(to bottom right, rgb(133, 123, 45), rgb(135, 88, 1));
+}

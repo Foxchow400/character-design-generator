@@ -1,8 +1,8 @@
 var genderList = ["male", "female", "other"];
-var speciesList = ["human", "antec", "tabaxi", "merfolk", "yuan-ti", "avian", "monster", "elf", "dwarf", "dragonborn", "lizardfolk", "halfling"];
+var speciesList = ["human", "antec", "tabaxi", "merfolk", "yuan-ti", "avian", "monster", "elf", "dwarf", "dragonborn", "lizardfolk", "halfling", "gnome"];
 var classesList = ["barbarian", "fighter", "cleric", "bard", "wizard", "sorcerer", "druid", "rogue", "monk", "ranger", "paladin"];
 var namesList = ["Marianna", "Killian", "Welch", "Johnathan", "Alesha", "Gregory", "Lulu", "Aamina", "Malachi", "Guy", "Gordo"];
-var sizesList = ["small", "medium", "large"]
+var sizesList = ["small", "medium", "large"];
 var savedResult = [];
 var charResult = [];
 var partySettings = [];
@@ -12,6 +12,7 @@ var abilityScoreDice = 4;
 var imported;
 const abilityNames = ["str", "dex", "con", "int", "wis", "cha"]
 
+// import function
 function onFilePicked(evt) {
   var file = document.getElementById("filePicker").files[0]
   var reader = new FileReader()
@@ -50,7 +51,7 @@ function generateDisplay() {
   if (Object.keys(partyObj).length < totalChars) {
     console.log("Generating " + totalChars + " Characters");
     for (i = 0; i < totalChars; i++) {
-      console.log(i)
+      // console.log(i)
       generateStats(i);
     }
   } else {
@@ -65,42 +66,80 @@ function generateDisplay() {
    "<button id='print' onclick='printParty()'>Print Party</button>";
 }
 
+// gets a random length of any array fed to it
 function getRandom(arr) {
   return arr[getRandomIndex(arr)];
 }
 
+// updates the display
 function updateDisplay() {
   document.getElementById("display").innerHTML = "";
   for (gen = 0; gen < totalChars; gen++) {
     console.log(gen);
     document.getElementById("display").innerHTML +=
       "<section class='char'>" + 
-        "<section class='atrCont'>" + 
-          "<p class='atr'>Str: " + partyObj[gen].attributes.str + "</p>" +
-          "<p class='atr'>Dex: " + partyObj[gen].attributes.dex + "</p>" +
-          "<p class='atr'>Con: " + partyObj[gen].attributes.con + "</p>" +
-          "<p class='atr'>Int: " + partyObj[gen].attributes.int + "</p>" +
-          "<p class='atr'>Wis: " + partyObj[gen].attributes.wis + "</p>" +
-          "<p class='atr'>Cha: " + partyObj[gen].attributes.cha + "</p>" +
-        "</section>" +
-        "<section class='atrCont'>" +
-          "<h2 class='space'>" + partyObj[gen].charName + "</h2>" + 
-          "<img class='' src='img/" + partyObj[gen].speciesList + ".png'></img>" +
-          "<section class='down'>" +
-            "<div class='color' style='background-color:" + partyObj[gen].colors[0] + "'><p class='space'>Species: " + partyObj[gen].speciesList + "</p></div>" +
-            "<div class='color' style='background-color:" + partyObj[gen].colors[1] + "'><p class='space'>Class: " + partyObj[gen].charClass + "</p></div>" +
-            "<div class='color' style='background-color:" + partyObj[gen].colors[2] + "'><p class='space'>Gender: " + partyObj[gen].genderList + "</p></div>" +
-            "</section><button class='reroll' value='" + gen + "' onclick='generateStats(" + gen + "); updateDisplay()'>Reroll</button>" +
+        "<h2 class=''>" + partyObj[gen].charName + "</h2>" + 
+        "<section class='flex-container'>" + 
+          "<div class='atrCont'>" + 
+            "<p class='atr'>Str: " + partyObj[gen].attributes.str + "</p>" +
+            "<p class='atr'>Dex: " + partyObj[gen].attributes.dex + "</p>" +
+            "<p class='atr'>Con: " + partyObj[gen].attributes.con + "</p>" +
+            "<p class='atr'>Int: " + partyObj[gen].attributes.int + "</p>" +
+            "<p class='atr'>Wis: " + partyObj[gen].attributes.wis + "</p>" +
+            "<p class='atr'>Cha: " + partyObj[gen].attributes.cha + "</p>" +
+          "</div>" +
+          "<section class='visual'>" +
+            "<section class='flex-container'>" +
+              "<div class='image'>" +
+              "<img class='' src='img/" + partyObj[gen].speciesList + ".png'></img>" +
+              "</div>" +
+              "<div class='color' style='background-color:" + partyObj[gen].colors[0] + "'>" +
+                "<p class='space'>Gender: " + partyObj[gen].genderList + "</p>" +
+              "</div>" +
+              "<div class='color' style='background-color:" + partyObj[gen].colors[1] + "'>" + 
+                "<p class='space'>Species: " + partyObj[gen].speciesList + "</p>" +
+              "</div>" +
+              "<div class='color' style='background-color:" + partyObj[gen].colors[2] + "'>" +
+                "<p class='space'>Size: " + partyObj[gen].size + "</p>" +
+              "</div>" +
+            "</section>" +
+             "<section class='below'>" +
+                "<p class='belowAtr' id='hp'>Health: " + partyObj[gen].health + "</p>" +
+                "<p class='belowAtr' id='skl'>Skill: " + partyObj[gen].skill + "</p>" +
+                "<p class='belowAtr' id='ac'>Armor: " + partyObj[gen].armor + "</p>" +
+                "<p class='belowAtr' id='cls'>Class: " + partyObj[gen].charClass + "</p>" +
+              "</section>" + 
+            "<button class='charButtons' value='" + gen + "' onclick='generateStats(" + gen + "); updateDisplay()'>Reroll</button>" +
+            "<button class='charButtons' value='" + gen + "' onclick='saveInv(" + gen + "); updateDisplay()'>Save Character</button>" +
           "</section>" + 
         "</section>" + 
       "</section>";
   }
 }
 
+// saves individual character stats
+function saveInv(charID) {
+  var charSave = JSON.stringify(partyObj[charID])
+  console.log(partyObj)
+  console.log(typeof partyObj)
+  console.log(Object.toString(partyObj))
+  document.getElementById("saved").innerHTML = charSave;
+  var element = document.createElement("a");
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + charSave);
+  element.setAttribute('download', 'data');
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
 // generate stat block
 function generateStats(charID) {
   console.log(charID)
   var charObj = {};
+  var sizeNum;
     
   // fill character object properties
   charObj.charName = getRandom(namesList);
@@ -109,18 +148,23 @@ function generateStats(charID) {
   charObj.genderList = getRandom(genderList);
   charObj.colors = {}
   charObj.attributes = {}
-  // do vvv
-  charObj.health = calcHealth();
-  charObj.size = calcSize();
-  charObj.armor = calcArmor();
-  charObj.skill = calcSkill();
-  
+  charObj.health = calcHealth(charObj.charClass);
+  charObj.size = calcSize(charObj.speciesList);
 
+  var sizeNum = 0;
+  if (charObj.speciesList != "small") {
+    sizeNum = 0
+  } else {
+    sizeNum = 1
+  }
+  
   // TODO: Make the dice roll methods be different options before initial generation
   for (abilityNameIndex = 0; abilityNameIndex < abilityNames.length; abilityNameIndex++) {
     charObj.attributes[abilityNames[abilityNameIndex]] = rollAbility();
   }
-
+  
+  charObj.skill = calcSkill(charObj.attributes.int, charObj.charClass);
+  charObj.armor = (charObj.attributes.dex + sizeNum);
 
   for (colorIndex=0;colorIndex<3;colorIndex++) {
     charObj.colors[colorIndex] = color();
@@ -131,53 +175,110 @@ function generateStats(charID) {
   console.log(partyObj);
 }
 
-
-// hp: hp based on class + con
-// size: based on species
-// ac: 10 + dex + size mod 
-// skill points: int mod + class mod (plus 4 at first level)
-// skill points: 
-// barbarian: 4
-// fighter: 2
-// cleric: 2
-// bard: 6
-// wizard: 2
-// sorcerer: 2
-// druid: 4
-// rogue: 8
-// monk: 4
-// ranger: 6
-// paladin: 2
-
-// hit points: 
-// barbarian: d12
-// fighter: d10
-// cleric: d8
-// bard: d6
-// wizard: d4
-// sorcerer: d4
-// druid: d8
-// rogue: d6
-// monk: d8
-// ranger: d8
-// paladin: d10
-
-function calcHealth() {
-  return "";
+// calculates hp based on class + con
+function calcHealth(charClass) {
+  var charHealth;
+  switch(charClass) {
+      case "barbarian":
+        charHealth = 12
+        break;
+      case "fighter":
+        charHealth = 10
+        break;
+      case "cleric":
+        charHealth = 8
+        break;
+      case "bard":
+        charHealth = 6
+        break;
+      case "wizard":
+        charHealth = 4
+        break;
+      case "sorcerer":
+        charHealth = 4
+        break;
+      case "druid":
+        charHealth = 8
+        break;
+      case "rogue":
+        charHealth = 6
+        break;
+      case "monk":
+        charHealth = 8
+        break;
+      case "ranger":
+        charHealth = 8
+        break;
+      case "paladin":
+        charHealth = 10
+        break;
+    default:
+      charHealth = 0
+  }
+  return charHealth;
 }
 
-function calcSize() {
-  return "";
+// calculates size based on species
+function calcSize(species) {
+  var size;
+  switch(species) {
+    case "halfling":
+      size = "small"
+      break;
+    case "gnome":
+      size = "small"
+      break;
+  default:
+      size = "medium"
+  }
+  return size;
 }
 
-function calcArmor() {
-  return "";
+// calculates skill points int mod + class mod (plus 4 at first level)
+function calcSkill(int, charClass) {
+  var skill;
+  switch(charClass) {
+    case "barbarian":
+      skill = 4
+      break;
+    case "fighter":
+      skill = 2
+      break;
+    case "cleric":
+      skill = 2
+      break;
+    case "bard":
+      skill = 6
+      break;
+    case "wizard":
+      skill = 2
+      break;
+    case "sorcerer":
+      skill = 2
+      break;
+    case "druid":
+      skill = 4
+      break;
+    case "rogue":
+      skill = 8
+      break;
+    case "monk":
+      skill = 4
+      break;
+    case "ranger":
+      skill = 6
+      break;
+    case "paladin":
+      skill = 2
+      break;
+  default:
+    skill = 0
+  }
+  skill += int + 4
+  return skill;
 }
 
-function calcSkill() {
-  return "";
-}
-
+// rolls initial stats
 function rollAbility() {
   var numArray = [];
   for (rollIndex = 0; rollIndex < abilityScoreDice; rollIndex++) {
@@ -187,7 +288,6 @@ function rollAbility() {
     return a - b;
   });
   numArray.reverse();
-  console.log(numArray);
 
   for (popTotal = 0; popTotal < (abilityScoreDice - 3); popTotal++) {
     numArray.pop();
@@ -200,8 +300,6 @@ function rollAbility() {
   initialValue);
   return numTotal;
 }
-
-// make the colors a separate function, and make the html match the properties 
 
 // shows the saved party and creates data file
 function saveParty() {
@@ -235,4 +333,5 @@ function reset() {
   partySettings = [];
   partyObj = {};
   generateDisplay();
+  document.getElementById("saved").innerHTML = "";
 }
