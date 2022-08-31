@@ -1,7 +1,7 @@
 var genderList = ["male", "female", "other"];
 var speciesList = ["human", "antec", "tabaxi", "merfolk", "yuan-ti", "avian", "monster", "elf", "dwarf", "dragonborn", "lizardfolk", "halfling", "gnome"];
 var classesList = ["barbarian", "fighter", "cleric", "bard", "wizard", "sorcerer", "druid", "rogue", "monk", "ranger", "paladin"];
-var namesList = ["Marianna", "Killian", "Welch", "Johnathan", "Alesha", "Gregory", "Lulu", "Aamina", "Malachi", "Guy", "Gordo"];
+var namesList = ["Marianna", "Killian", "Welch", "Johnathan", "Alesha", "Gregory", "Lulu", "Aamina", "Malichi", "Guy", "Gordo"];
 var sizesList = ["small", "medium", "large"];
 var savedResult = [];
 var charResult = [];
@@ -15,6 +15,7 @@ const abilityNames = ["str", "dex", "con", "int", "wis", "cha"]
 // import function
 function onFilePicked(evt) {
   var file = document.getElementById("filePicker").files[0]
+  console.log(file);
   var reader = new FileReader()
   reader.readAsText(file, "UTF-8") // read file as text
     
@@ -24,13 +25,28 @@ function onFilePicked(evt) {
       validatedFile = String(validatedFile)
       console.log(validatedFile)
       partyObj = JSON.parse(validatedFile);
-      generateDisplay();
+      updateDisplay();
+      file = "";
+      console.log(file);
+      
       return validatedFile
     }
     reader.onerror = function (evt) {
+      file = "";
+      console.log(file);
         display("display", "Error: Unable to read file.")
     }
   }
+  file = "";
+  console.log(file);
+}
+
+// clears screen without reloading page
+function displayReset() {
+  document.getElementById("display").innerHTML =  
+  "<button id='reset' onclick='reset()'>Generate New Party</button>";
+  
+  document.getElementById("buttonDisplay").innerHTML = "";
 }
 
 // generates a random number between 0 and the sent array's length
@@ -58,12 +74,6 @@ function generateDisplay() {
     console.log("Error!");
   }
   updateDisplay();
-
-  // button options
-  document.getElementById("buttonDisplay").innerHTML =
-   "<button id='reset' onclick='reset()'>Generate</button>" + 
-   "<button id='save' onclick='saveParty()'>Save Party</button>" + 
-   "<button id='print' onclick='printParty()'>Print Party</button>";
 }
 
 // gets a random length of any array fed to it
@@ -75,13 +85,13 @@ function getRandom(arr) {
 function updateDisplay() {
   document.getElementById("display").innerHTML = "";
   for (gen = 0; gen < totalChars; gen++) {
-    console.log(gen);
     document.getElementById("display").innerHTML +=
       "<section class='char'>" + 
         "<h2 class=''>" + partyObj[gen].charName + "</h2>" + 
         "<section class='flex-container'>" + 
           "<div class='atrCont'>" + 
-            "<p class='atr'>Str: " + partyObj[gen].attributes.str + "</p>" +
+          "<p class='atr'>Str: " + partyObj[gen].attributes.str + "</p>" +
+          "<p class='atr'>Str: " + partyObj[gen].attrMods['str'] + "</p>" +
             "<p class='atr'>Dex: " + partyObj[gen].attributes.dex + "</p>" +
             "<p class='atr'>Con: " + partyObj[gen].attributes.con + "</p>" +
             "<p class='atr'>Int: " + partyObj[gen].attributes.int + "</p>" +
@@ -114,15 +124,25 @@ function updateDisplay() {
           "</section>" + 
         "</section>" + 
       "</section>";
+      
+      // button options
+      document.getElementById("buttonDisplay").innerHTML =
+      "<button id='reset' onclick='reset()'>Generate</button>" + 
+      "<button id='save' onclick='saveParty()'>Save Party</button>" + 
+      "<button id='print' onclick='printParty()'>Print Party</button>";
   }
+  console.log(partyObj);
 }
 
 // saves individual character stats
 function saveInv(charID) {
-  var charSave = JSON.stringify(partyObj[charID])
-  console.log(partyObj)
-  console.log(typeof partyObj)
-  console.log(Object.toString(partyObj))
+  var newObj = {};
+  newObj[0] = partyObj[charID];
+  console.log(newObj);
+  var charSave = JSON.stringify(newObj)
+  console.log(partyObj[charID])
+  console.log(typeof partyObj[charID])
+  console.log(Object.toString(partyObj[charID]))
   document.getElementById("saved").innerHTML = charSave;
   var element = document.createElement("a");
   element.setAttribute('href', 'data:text/plain;charset=utf-8,' + charSave);
@@ -137,34 +157,43 @@ function saveInv(charID) {
 
 // generate stat block
 function generateStats(charID) {
-  console.log(charID)
   var charObj = {};
-  var sizeNum;
-    
   // fill character object properties
+  charObj.attributes = {}
+  charObj.attrMods = {}
+  console.log(charObj)
+  
+  // TODO: Make the dice roll methods be different options before initial generation
+  for (abilityNameIndex = 0; abilityNameIndex < abilityNames.length; abilityNameIndex++) {
+    var newScore = rollAbility();
+    var score = newScore;
+    var mod = Math.floor((score/2) - 5);
+    console.log(score + " : " + mod)
+    charObj.attributes[abilityNames[abilityNameIndex]] = score;
+    charObj.attrMods[abilityNames[abilityNameIndex]] = mod;
+    console.log(charObj)
+  }
+
   charObj.charName = getRandom(namesList);
   charObj.charClass = getRandom(classesList)
   charObj.speciesList = getRandom(speciesList);
   charObj.genderList = getRandom(genderList);
   charObj.colors = {}
-  charObj.attributes = {}
-  charObj.health = calcHealth(charObj.charClass);
+  charObj.health = calcHealth(charObj.charClass, charObj.attributes.con); //TODO: use modifiers instead of score
   charObj.size = calcSize(charObj.speciesList);
-
-  var sizeNum = 0;
-  if (charObj.speciesList != "small") {
+  charObj.skill = calcSkill(charObj.attributes.int, charObj.charClass); //TODO: use modifiers instead of score  
+  var size = 0;
+  if (size != "small") {
     sizeNum = 0
   } else {
     sizeNum = 1
   }
-  
+  charObj.armor = (charObj.attributes.dex + size); //TODO: Calculate based on dex modifier instead of score
+
   // TODO: Make the dice roll methods be different options before initial generation
   for (abilityNameIndex = 0; abilityNameIndex < abilityNames.length; abilityNameIndex++) {
     charObj.attributes[abilityNames[abilityNameIndex]] = rollAbility();
   }
-  
-  charObj.skill = calcSkill(charObj.attributes.int, charObj.charClass);
-  charObj.armor = (charObj.attributes.dex + sizeNum);
 
   for (colorIndex=0;colorIndex<3;colorIndex++) {
     charObj.colors[colorIndex] = color();
@@ -172,11 +201,11 @@ function generateStats(charID) {
   // update master party object
   partyObj[charID] = charObj
   console.log(charObj);
-  console.log(partyObj);
 }
 
+
 // calculates hp based on class + con
-function calcHealth(charClass) {
+function calcHealth(charClass, conScore) {
   var charHealth;
   switch(charClass) {
       case "barbarian":
@@ -215,6 +244,9 @@ function calcHealth(charClass) {
     default:
       charHealth = 0
   }
+  console.log(conScore)
+  console.log(Math.floor((conScore/2) - 5))
+  charHealth += Math.floor((conScore/2) - 5)
   return charHealth;
 }
 
@@ -274,7 +306,7 @@ function calcSkill(int, charClass) {
   default:
     skill = 0
   }
-  skill += int + 4
+  skill += int + 4 // TODO: use quantity instead of adding ((2 + Int modifier) × 4)
   return skill;
 }
 
@@ -293,7 +325,6 @@ function rollAbility() {
     numArray.pop();
   }
 
-  console.log(numArray);
 
   const initialValue = 0;
   var numTotal = numArray.reduce((previousValue, currentValue) => previousValue + currentValue,

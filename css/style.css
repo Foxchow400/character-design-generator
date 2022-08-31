@@ -1,3 +1,4 @@
+/* TODO: Make width 3 x 2 instead of 2 x 3 */
 body {
     background: #2c2c2c;
     color: whitesmoke;
@@ -12,30 +13,34 @@ p, h2 {
     text-align: center;
 }
 
-#generate {
+h2 {
+    margin: 2% 0%;
+}
+
+#generate{
     display: block;
     margin: 0 auto;
 }
 
 .char {
-    width: 900px;
+    width: 30%;
     background-color: #3f3f3f;
     display: inline-block;
     margin: 20px;
-    height: 350px;
+    height: 370px;
     border-radius: 15px;
 }
 
 .atrCont {
-    background-color:#2c2c2c;
-    padding: 20px;
-    width: 60px;
-    margin: 40px;
+    background-color:#6d6d6d;
+    padding: 0% 5%;
+    margin: 0% 3%;
+    height: 300px;
+    border-radius: 5px;
 }
 
 .down {
-    height: 100px;
-    margin: 20px;
+    margin: 5%;
 }
 
 .flex-container {
@@ -44,33 +49,40 @@ p, h2 {
 }
 
 .flex-container > div {
-    margin: 10px;
+    margin: 1%;
     text-align: center;
 }
 
 .space {
-    margin: 20px;
-    padding: 10px 20px;
+    padding: 8px 15px;
     background-color: #3f3f3f;
+    border-radius: 5px;
 }
 
 .color {
-    border: 1px solid white;}
+    border: 1px solid white;
+    border-radius: 5px;
+}
 
 .belowAtr {
     display: inline-flex;
-    padding: 40px;
-    border: 1px solid black;
+    padding: 5% 2%;
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 5px;
 }
 
 .charButtons {
     display: inline-block;
 }
 
+#saved {
+    padding: 10px;
+}
+
 @keyframes bounce {
 	0%, 100%, 20%, 50%, 80% {transform: translateY(0)}
-	40% {transform:translateY(-30px)}
-	60% {transform:translateY(-15px)}
+	40% {transform:translateY(-10px)}
+	60% {transform:translateY(-3px)}
 }
 
 img {
