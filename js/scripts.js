@@ -163,6 +163,7 @@ function generateStats(charID) {
   charObj.attrMods = {}
   console.log(charObj)
   
+  
   // TODO: Make the dice roll methods be different options before initial generation
   for (abilityNameIndex = 0; abilityNameIndex < abilityNames.length; abilityNameIndex++) {
     var newScore = rollAbility();
@@ -189,11 +190,6 @@ function generateStats(charID) {
     sizeNum = 1
   }
   charObj.armor = (charObj.attributes.dex + size); //TODO: Calculate based on dex modifier instead of score
-
-  // TODO: Make the dice roll methods be different options before initial generation
-  for (abilityNameIndex = 0; abilityNameIndex < abilityNames.length; abilityNameIndex++) {
-    charObj.attributes[abilityNames[abilityNameIndex]] = rollAbility();
-  }
 
   for (colorIndex=0;colorIndex<3;colorIndex++) {
     charObj.colors[colorIndex] = color();
