@@ -27,16 +27,25 @@ h2 {
     background-color: #3f3f3f;
     display: inline-block;
     margin: 20px;
-    height: 370px;
+    height: 390px;
     border-radius: 15px;
 }
 
 .atrCont {
     background-color:#6d6d6d;
-    padding: 0% 5%;
+    padding: 3%;
     margin: 0% 3%;
     height: 300px;
-    border-radius: 5px;
+    border-radius: 15px;
+}
+
+.atr {
+    margin: 1.5px;
+}
+
+.atrMod {
+    margin: 0px;
+    color: #a9a9a9;
 }
 
 .down {

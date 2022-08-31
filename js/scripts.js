@@ -47,6 +47,7 @@ function displayReset() {
   "<button id='reset' onclick='reset()'>Generate New Party</button>";
   
   document.getElementById("buttonDisplay").innerHTML = "";
+  document.getElementById("saved").innerHTML = "";
 }
 
 // generates a random number between 0 and the sent array's length
@@ -90,13 +91,18 @@ function updateDisplay() {
         "<h2 class=''>" + partyObj[gen].charName + "</h2>" + 
         "<section class='flex-container'>" + 
           "<div class='atrCont'>" + 
-          "<p class='atr'>Str: " + partyObj[gen].attributes.str + "</p>" +
-          "<p class='atr'>Str: " + partyObj[gen].attrMods['str'] + "</p>" +
+            "<p class='atr'>Str: " + partyObj[gen].attributes.str + "</p>" +
+            "<h5 class='atrMod'>Str Mod: " + partyObj[gen].attrMods['str'] + "</h5>" +
             "<p class='atr'>Dex: " + partyObj[gen].attributes.dex + "</p>" +
+            "<h5 class='atrMod'>Dex Mod: " + partyObj[gen].attrMods['dex'] + "</h5>" +
             "<p class='atr'>Con: " + partyObj[gen].attributes.con + "</p>" +
+            "<h5 class='atrMod'>Con Mod: " + partyObj[gen].attrMods['con'] + "</h5>" +
             "<p class='atr'>Int: " + partyObj[gen].attributes.int + "</p>" +
+            "<h5 class='atrMod'>Int Mod: " + partyObj[gen].attrMods['int'] + "</h5>" +
             "<p class='atr'>Wis: " + partyObj[gen].attributes.wis + "</p>" +
+            "<h5 class='atrMod'>Wis Mod: " + partyObj[gen].attrMods['wis'] + "</h5>" +
             "<p class='atr'>Cha: " + partyObj[gen].attributes.cha + "</p>" +
+            "<h5 class='atrMod'>Cha Mod: " + partyObj[gen].attrMods['cha'] + "</h5>" +
           "</div>" +
           "<section class='visual'>" +
             "<section class='flex-container'>" +
@@ -129,7 +135,8 @@ function updateDisplay() {
       document.getElementById("buttonDisplay").innerHTML =
       "<button id='reset' onclick='reset()'>Generate</button>" + 
       "<button id='save' onclick='saveParty()'>Save Party</button>" + 
-      "<button id='print' onclick='printParty()'>Print Party</button>";
+      "<button id='print' onclick='printParty()'>Print Party</button>" +
+      "<button onclick='displayReset()''>Clear Board</button>";
   }
   console.log(partyObj);
 }
@@ -158,7 +165,6 @@ function saveInv(charID) {
 // generate stat block
 function generateStats(charID) {
   var charObj = {};
-  // fill character object properties
   charObj.attributes = {}
   charObj.attrMods = {}
   console.log(charObj)
@@ -180,16 +186,16 @@ function generateStats(charID) {
   charObj.speciesList = getRandom(speciesList);
   charObj.genderList = getRandom(genderList);
   charObj.colors = {}
-  charObj.health = calcHealth(charObj.charClass, charObj.attributes.con); //TODO: use modifiers instead of score
+  charObj.health = calcHealth(charObj.charClass, charObj.attrMods.con); //TODO: use modifiers instead of score
   charObj.size = calcSize(charObj.speciesList);
-  charObj.skill = calcSkill(charObj.attributes.int, charObj.charClass); //TODO: use modifiers instead of score  
+  charObj.skill = calcSkill(charObj.attrMods.int, charObj.charClass); //TODO: use modifiers instead of score  
   var size = 0;
   if (size != "small") {
     sizeNum = 0
   } else {
     sizeNum = 1
   }
-  charObj.armor = (charObj.attributes.dex + size); //TODO: Calculate based on dex modifier instead of score
+  charObj.armor = (10 + charObj.attrMods.dex + size); //TODO: Calculate based on dex modifier instead of score
 
   for (colorIndex=0;colorIndex<3;colorIndex++) {
     charObj.colors[colorIndex] = color();
@@ -240,9 +246,7 @@ function calcHealth(charClass, conScore) {
     default:
       charHealth = 0
   }
-  console.log(conScore)
-  console.log(Math.floor((conScore/2) - 5))
-  charHealth += Math.floor((conScore/2) - 5)
+  charHealth += conScore
   return charHealth;
 }
 
@@ -265,6 +269,7 @@ function calcSize(species) {
 // calculates skill points int mod + class mod (plus 4 at first level)
 function calcSkill(int, charClass) {
   var skill;
+  var newSkill;
   switch(charClass) {
     case "barbarian":
       skill = 4
@@ -302,8 +307,8 @@ function calcSkill(int, charClass) {
   default:
     skill = 0
   }
-  skill += int + 4 // TODO: use quantity instead of adding ((2 + Int modifier) × 4)
-  return skill;
+  newSkill = ((skill + int) * 4); 
+  return newSkill;
 }
 
 // rolls initial stats
